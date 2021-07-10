@@ -1,0 +1,32 @@
+<h1>Things Todo</h1>
+<div id="create">
+  <%= f = form_for @changeset, "#", phx_submit: "save"  %>
+
+    <div class="field">
+      <%= text_input f, :name, placeholder: "Todo name", autocomplete: "off" %>
+      <%= error_tag f, :name %>
+    </div>
+
+    <div class="field">
+      i<%= textarea f, :description, placeholder: "Detail description" %>
+    </div>
+
+    <%= submit "Create", phx_disable_with: "creating..." %>
+  </form>
+
+  <div id="todos" phx-update="prepend">
+    <%= for todo <- @todos do %>
+      <div class="todo <%= if todo.status == "Complete", do: "complete" %>" id="<%= todo.id %>">
+        <div class="name">
+          <%= todo.name %>
+        </div>
+        <div class="phone">
+          <%= todo.details %>
+        </div>
+        <div class="status">
+          <%= todo.status %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
