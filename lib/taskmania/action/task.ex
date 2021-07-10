@@ -5,7 +5,8 @@ defmodule Taskmania.Action.Task do
   schema "tasks" do
     field :details, :string
     field :name, :string
-    #field :status, :string
+    field :status, :string
+    field :comment, :string
     field :completed_date, :utc_datetime
 
     belongs_to :todo, Taskmania.Action.Todo
@@ -15,7 +16,7 @@ defmodule Taskmania.Action.Task do
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:name, :details, :todo_id, :completed_date])
+    |> cast(attrs, [:name, :details, :todo_id, :status, :completed_date])
     |> validate_required([:name, :details])
   end
 end

@@ -164,6 +164,9 @@ defmodule Taskmania.Action do
 
   """
   def create_task(attrs \\ %{}) do
+    attrs = attrs
+      |> Map.put("status", "New")
+
     %Task{}
     |> Task.changeset(attrs)
     |> Repo.insert()
