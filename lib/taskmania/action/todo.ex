@@ -10,13 +10,14 @@ defmodule Taskmania.Action.Todo do
     field :type, :string
     field :status, :string
 
+    has_many :tasks, Taskmania.Action.Task
     timestamps()
   end
 
   @doc false
   def changeset(todo, attrs) do
     todo
-    |> cast(attrs, [:name, :type, :todo_date, :deleted_at, :status])
+    |> cast(attrs, [:name, :details, :type, :todo_date, :deleted_at, :status])
     |> validate_required([:name, :type])
   end
 end

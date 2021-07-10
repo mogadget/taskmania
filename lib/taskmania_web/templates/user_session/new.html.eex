@@ -14,7 +14,7 @@
     <%= email_input f, :email, required: true, class: "form-control" %>
   </div>
 
-  <div class="fmb-3">
+  <div class="mb-3">
     <%= label f, :password, class: "control-label" %>
     <%= password_input f, :password, required: true, class: "form-control" %>
   </div>

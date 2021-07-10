@@ -22,6 +22,14 @@ defmodule Taskmania.Action do
     Repo.all(Todo)
   end
 
+  def list_todos_by_status do
+    Repo.all(Todo)
+  end
+
+  def list_todos_by_type do
+    Repo.all(Todo)
+  end
+
   @doc """
   Gets a single todo.
 
@@ -38,6 +46,13 @@ defmodule Taskmania.Action do
   """
   def get_todo!(id), do: Repo.get!(Todo, id)
 
+  def get_todo_tasks(id) do
+    Task
+      |> where([task], task.todo_id == ^id)
+      |> preload(:todo)
+      |> Repo.all()
+  end
+
   @doc """
   Creates a todo.
 
@@ -51,6 +66,9 @@ defmodule Taskmania.Action do
 
   """
   def create_todo(attrs \\ %{}) do
+    attrs = attrs
+      |> Map.put("status", "New")
+
     %Todo{}
     |> Todo.changeset(attrs)
     |> Repo.insert()

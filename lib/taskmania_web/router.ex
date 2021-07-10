@@ -22,6 +22,7 @@ defmodule TaskmaniaWeb.Router do
 
     live "/", PageLive, :index
     live "/todos", TodosLive
+    live "/todos/:id/show", TodosLive.Show, :show
   end
 
   # Other scopes may use custom stacks.

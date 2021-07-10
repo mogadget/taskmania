@@ -14,10 +14,11 @@ defmodule TaskmaniaWeb.TodosLive do
         changeset: changeset
       )
 
-    {:ok, socket, temporary_assigns: [todos: []]}
+    {:ok, socket}
   end
 
   def handle_event("save", %{"todo" => params}, socket) do
+    #IO.inspect(["handle-save", socket])
     case Action.create_todo(params) do
       {:ok, todo} ->
         socket =
@@ -31,12 +32,21 @@ defmodule TaskmaniaWeb.TodosLive do
 
         socket = assign(socket, changeset: changeset)
 
-        :timer.sleep(500)
-
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         socket = assign(socket, changeset: changeset)
+        {:noreply, socket}
+    end
+  end
+
+  def handle_params(%{"sort_by" => sort_by}, socket) do
+    case sort_by do
+      sort_by
+      when sort_by in ~w(type status) ->
+        {:noreply, assign(socket, todos: Action.list_todos_by_status)}
+
+      _ ->
         {:noreply, socket}
     end
   end
