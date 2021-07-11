@@ -29,6 +29,9 @@
             <th scope="col">Type</th>
             <th scope="col">Details</th>
             <th scopp="col"><%= link "Status", to: Routes.live_path(@socket, TaskmaniaWeb.TodosLive, %{sort_by: "status"}) %>
+            <th width="1%"></th>
+            <th width="1%"></th>
+            <th width="1%"></th>
         </tr>
     </thead>
     <tbody>
@@ -40,6 +43,9 @@
                 <td><%= todo.type %></td>
                 <td><%= todo.details %></td>
                 <td><%= todo.status %></td>
+                <td><%= todo.total_tasks %></td>
+                <td><%= todo.completed_tasks %></td>
+                <td><%= todo.failed_tasks %></td>
             </tr>
         <% end %>
         </div>

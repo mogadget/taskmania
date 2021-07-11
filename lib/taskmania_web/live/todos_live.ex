@@ -5,7 +5,7 @@ defmodule TaskmaniaWeb.TodosLive do
   alias Taskmania.Action.Todo
 
   def mount(_params, _session, socket) do
-    todos = Action.list_todos()
+    todos = Action.list_todos_with_total()
     changeset = Action.change_todo(%Todo{})
 
     socket =

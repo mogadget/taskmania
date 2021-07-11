@@ -231,4 +231,47 @@ defmodule Taskmania.Action do
     ["Pending","Done","Failed"]
   end
 
+  def total_task_status(todo_id, status) do
+    query = from t in "tasks",
+          where: t.todo_id == ^todo_id,
+          select: count(t.id)
+
+    Repo.one(query)
+  end
+  def list_todos_with_total() do
+    ctask =
+      from t in Task,
+        group_by: t.todo_id,
+        select: %{todo_id: t.todo_id, ctasks: count(t.id)}
+
+    ftask =
+      from t in Task,
+        group_by: t.todo_id,
+        where: t.status == "Failed",
+        select: %{todo_id: t.todo_id, ctasks: count(t.id)}
+
+    comp =
+      from t in Task,
+        group_by: t.todo_id,
+        where: t.status == "Completed",
+        select: %{todo_id: t.todo_id, ctasks: count(t.id)}
+
+    qtodo = from t in Todo,
+      left_join: tasks in subquery(ctask), on: tasks.todo_id == t.id,
+      left_join: complete in subquery(comp), on: complete.todo_id == t.id,
+      left_join: failed in subquery(ftask), on: failed.todo_id == t.id,
+      select: %{
+        id: t.id,
+        name: t.name,
+        status: t.status,
+        type: t.type,
+        details: t.details,
+        total_tasks: tasks.ctasks,
+        completed_tasks: complete.ctasks,
+        failed_tasks: failed.ctasks},
+      order_by: t.id
+
+    Repo.all(qtodo)
+  end
+
 end
