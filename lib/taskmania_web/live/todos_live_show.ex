@@ -80,19 +80,28 @@ defmodule TaskmaniaWeb.TodosLive.Show do
   end
 
   def render(assigns) do
-    todo  = assigns.todo
+    #todo  = assigns.todo
     #tasks = assigns.tasks
-    changeset = assigns.changeset
+    #changeset = assigns.changeset
     ~L"""
 
-    <h4 class="mb-3"><%= todo.name %> Tasks</h4>
+    <h4 class="mb-3"><%= @todo.name %> Tasks</h4>
     <div id="create">
-      <%= if todo.status == "New" do %>
+      <%= if @todo.status == "New" do %>
         <div class="container">
-          <div class="row">
-            <div class="col-8">List of process to do</div>
-            <div class="col-4">
-              <%= live_patch "Create Todo", to: Routes.todos_show_path(@socket, :modal_new, todo.id), class: "btn btn-success" %>
+          <div class="row alert alert-warning">
+            <div class="col-9">
+              List of process Todo
+            </div>
+            <div class="col-2">
+              <%= if length(@tasks) > 0 do %>
+                <div class="btn btn-info" phx-click="task_add_complete" phx-value-id="<%= @todo.id %>" phx-disable-with="updating...">
+                  Done Adding Tasks
+                </div>
+              <% end %>
+            </div>
+            <div class="col-1">
+              <%= live_patch "Add", to: Routes.todos_show_path(@socket, :modal_new, @todo.id), class: "btn btn-success" %>
 
               <%= if @live_action == :modal_new do %>
 
@@ -100,11 +109,10 @@ defmodule TaskmaniaWeb.TodosLive.Show do
                     TaskmaniaWeb.ModalComponent,
                     id: :modal,
                     component: TaskmaniaWeb.ModalComponent,
-                    return_to: Routes.todos_show_path(@socket, :show, todo.id),
+                    return_to: Routes.todos_show_path(@socket, :show, @todo.id),
                     changeset: @changeset,
                     tasks: @tasks,
-                    todo: @todo,
-                    opts: %{}
+                    todo: @todo
                   ) %>
 
               <% end %>
@@ -134,14 +142,14 @@ defmodule TaskmaniaWeb.TodosLive.Show do
                       <td><%= task.details%></td>
                       <td><%= task.status%></td>
                       <td>
-                        <%= if todo.status == "Ready" && task.status != "Completed" && task.status != "Failed" do %>
+                        <%= if @todo.status == "Ready" && task.status != "Completed" && task.status != "Failed" do %>
                           <div class="btn btn-danger btn-sm" phx-click="failed" phx-value-id="<%= task.id %>" phx-disable-with="updating...">
                             Failed
                           </div>
                         <% end %>
                       </td>
                       <td>
-                        <%= if todo.status == "Ready" && task.status != "Completed" && task.status != "Failed" do %>
+                        <%= if @todo.status == "Ready" && task.status != "Completed" && task.status != "Failed" do %>
                           <div class="btn btn-success btn-sm" phx-click="complete" phx-value-id="<%= task.id %>" phx-disable-with="updating...">
                             Done
                           </div>

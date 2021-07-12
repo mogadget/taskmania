@@ -6,6 +6,7 @@ defmodule TaskmaniaWeb.ModalComponent do
     <div class="phx-modal" phx-window-keydown="close" phx-key="escape" phx-capture-click="close" phx-target="<%= @myself %>">
       <div class="phx-modal-content">
         <%= live_patch raw("&times;"),  to: @return_to,  class: "phx-modal-close" %>
+        <h4>Add new Task</h4>
         <%= f = form_for @changeset, "#", phx_submit: :save %>
 
           <div class="mb-3">
@@ -19,11 +20,6 @@ defmodule TaskmaniaWeb.ModalComponent do
 
           <div class="mb-3">
             <%= submit "Add Task", class: "btn btn-success", phx_disable_with: "appending..." %>
-            <%= if length(@tasks) > 0 do %>
-              <div class="btn btn-info" phx-click="task_add_complete" phx-value-id="<%= @todo.id %>" phx-disable-with="updating...">
-                Done Adding Tasks
-              </div>
-            <% end %>
           </div>
         </form>
       </div>
