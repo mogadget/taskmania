@@ -54,4 +54,20 @@ defmodule TaskmaniaWeb.TodosLive do
         {:noreply, socket}
     end
   end
+
+  defp completed_pctg(total, completed) do
+    if total == nil || total == 0 || completed == nil do
+      0
+    else
+      (completed / total) * 100
+    end
+  end
+
+  defp failed_pctg(total, failed) do
+    if total == nil || total == 0 || failed == nil do
+      0
+    else
+      (failed / total) * 100
+    end
+  end
 end
