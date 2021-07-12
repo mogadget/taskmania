@@ -37,8 +37,6 @@ defmodule TaskmaniaWeb.TodosLive.New do
   end
 
   def render(assigns) do
-    #tasks = assigns.tasks
-    changeset = assigns.changeset
     ~L"""
       <h4 class="mb-3">New Todo</h4>
       <div id="create">
@@ -56,10 +54,12 @@ defmodule TaskmaniaWeb.TodosLive.New do
 
           <div class="mb-3">
               <%= textarea f, :details, class: "form-control", placeholder: "Detail description" %>
+              <%= error_tag f, :details %>
           </div>
 
           <div class="mb-3">
-              <%= submit "Create", class: "btn btn-success", phx_disable_with: "creating..." %>
+              <%= submit "Submit", class: "btn btn-success", phx_disable_with: "creating..." %>
+              <%= link "Cancel", class: "btn btn-warning", to: Routes.todos_path(@socket, :index)%>
           </div>
         </form>
       </div>

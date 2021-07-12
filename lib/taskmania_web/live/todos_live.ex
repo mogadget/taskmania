@@ -44,6 +44,17 @@ defmodule TaskmaniaWeb.TodosLive do
     end
   end
 
+  def handle_event("create", %{"key" => key}, socket) do
+    case key do
+      "c" ->
+        {:noreply,
+        socket
+          |> redirect(to: Routes.live_path(socket, TaskmaniaWeb.TodosLive.New))}
+
+      _ -> {:noreply, socket}
+    end
+  end
+
   def handle_params(%{"sort_by" => sort_by}, socket) do
     case sort_by do
       sort_by

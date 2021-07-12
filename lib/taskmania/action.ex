@@ -231,13 +231,26 @@ defmodule Taskmania.Action do
     ["Pending","Done","Failed"]
   end
 
-  def total_task_status(todo_id, status) do
+  def total_task_status(todo_id, _status) do
     query = from t in "tasks",
           where: t.todo_id == ^todo_id,
           select: count(t.id)
 
     Repo.one(query)
   end
+
+  def total_todo_task(todo_id) do
+    query = from t in "tasks",
+          where: t.todo_id == ^todo_id,
+          select: count(t.id)
+
+    Repo.one(query)
+  end
+
+  def next_task_order(todo_id) do
+    total_todo_task(todo_id) + 1
+  end
+
   def list_todos_with_total() do
     ctask =
       from t in Task,

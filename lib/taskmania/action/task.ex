@@ -7,6 +7,9 @@ defmodule Taskmania.Action.Task do
     field :name, :string
     field :status, :string
     field :comment, :string
+    field :sequence, :integer
+    field :dependencies, :string
+    field :assigned_to, :string
     field :completed_date, :utc_datetime
 
     belongs_to :todo, Taskmania.Action.Todo
@@ -16,7 +19,7 @@ defmodule Taskmania.Action.Task do
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:name, :details, :todo_id, :status, :completed_date])
+    |> cast(attrs, [:name, :details, :todo_id, :status, :completed_date, :sequence, :dependencies, :assigned_to])
     |> validate_required([:name, :details])
   end
 end

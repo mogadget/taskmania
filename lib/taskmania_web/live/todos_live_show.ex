@@ -24,19 +24,15 @@ defmodule TaskmaniaWeb.TodosLive.Show do
   end
 
   def handle_event("save", %{"task" => params}, socket) do
-    #todo = assign(socket)
-    IO.inspect(["---->", params, socket])
+    todo_id = socket.assigns.todo.id
 
-    params = Map.put(params, "todo_id", socket.assigns.todo.id)
+    params = params
+      |> Map.put("todo_id", todo_id)
+      |> Map.put("sequence", next_task_order(todo_id))
 
     case Action.create_task(params) do
       {:ok, task} ->
-        socket =
-          update(
-            socket,
-            :tasks,
-            fn tasks -> [task| tasks] end
-          )
+        socket = update(socket, :tasks, fn tasks -> [task| tasks] end)
 
         changeset = Action.change_task(%Task{})
 
@@ -80,41 +76,37 @@ defmodule TaskmaniaWeb.TodosLive.Show do
   end
 
   def render(assigns) do
-    #todo  = assigns.todo
-    #tasks = assigns.tasks
-    #changeset = assigns.changeset
     ~L"""
 
-    <h4 class="mb-3"><%= @todo.name %> Tasks</h4>
+    <h4 class="mb-3"><%= @todo.name %></h4>
+    <p><%= @todo.details %></p>
     <div id="create">
       <%= if @todo.status == "New" do %>
         <div class="container">
-          <div class="row alert alert-warning">
-            <div class="col-9">
-              List of process Todo
+          <div class="row alert alert-primary">
+            <div class="col-10">
+              <p>This page list all the tasks that are needed to perform the Todo process <strong><%= @todo.name %></strong>.  A task might be dependent to other tasks to complete or can only be performed by a designated person or role.</p>
+              <p><strong>Note :</strong> These tasks will remain in draft mode or "New" status until the "Done Adding Task" button is clicked to set to Ready status.</p>
             </div>
             <div class="col-2">
+              <%= live_patch "+ Add Task", to: Routes.todos_show_path(@socket, :modal_new, @todo.id), class: "btn btn-success mb-2 w-100" %>
+
               <%= if length(@tasks) > 0 do %>
-                <div class="btn btn-info" phx-click="task_add_complete" phx-value-id="<%= @todo.id %>" phx-disable-with="updating...">
+                <div class="btn btn-info w-100 " phx-click="task_add_complete" phx-value-id="<%= @todo.id %>" phx-disable-with="updating...">
                   Done Adding Tasks
                 </div>
               <% end %>
-            </div>
-            <div class="col-1">
-              <%= live_patch "Add", to: Routes.todos_show_path(@socket, :modal_new, @todo.id), class: "btn btn-success" %>
 
               <%= if @live_action == :modal_new do %>
-
-              <%= live_component(
-                    TaskmaniaWeb.ModalComponent,
-                    id: :modal,
-                    component: TaskmaniaWeb.ModalComponent,
-                    return_to: Routes.todos_show_path(@socket, :show, @todo.id),
-                    changeset: @changeset,
-                    tasks: @tasks,
-                    todo: @todo
-                  ) %>
-
+                <%= live_component(
+                      TaskmaniaWeb.ModalComponent,
+                      id: :modal,
+                      component: TaskmaniaWeb.ModalComponent,
+                      return_to: Routes.todos_show_path(@socket, :show, @todo.id),
+                      changeset: @changeset,
+                      tasks: @tasks,
+                      todo: @todo
+                    ) %>
               <% end %>
             </div>
           </div>
@@ -125,30 +117,29 @@ defmodule TaskmaniaWeb.TodosLive.Show do
         <table class="table table-striped">
           <thead>
               <tr>
-                  <th scope="col">#</th>
+                  <th scope="col" width="1%">#</th>
                   <th scope="col">Name</th>
                   <th scope="col">Details</th>
                   <th scope="col">Status</th>
-                  <th scope="col" width="1%"></th>
-                  <th scope="col" width="1%"></th>
+                  <th scope="col" colspan="2">Action</th>
               </tr>
           </thead>
           <tbody>
             <div id="todos" phx-update="prepend">
-              <%= for {task, idx} <- Enum.with_index(@tasks) do %>
+              <%= for {task, _idx} <- Enum.with_index(@tasks) do %>
                   <tr class="task <%= classy(task.status) %>" id="<%= task.id %>">
-                      <th scope="row"><%= idx + 1 %></th>
+                      <th scope="row"><%= task.sequence %></th>
                       <td><%= task.name %></td>
                       <td><%= task.details%></td>
                       <td><%= task.status%></td>
-                      <td>
+                      <td width="1%">
                         <%= if @todo.status == "Ready" && task.status != "Completed" && task.status != "Failed" do %>
                           <div class="btn btn-danger btn-sm" phx-click="failed" phx-value-id="<%= task.id %>" phx-disable-with="updating...">
                             Failed
                           </div>
                         <% end %>
                       </td>
-                      <td>
+                      <td width="1%">
                         <%= if @todo.status == "Ready" && task.status != "Completed" && task.status != "Failed" do %>
                           <div class="btn btn-success btn-sm" phx-click="complete" phx-value-id="<%= task.id %>" phx-disable-with="updating...">
                             Done
@@ -161,8 +152,9 @@ defmodule TaskmaniaWeb.TodosLive.Show do
           </tbody>
         </table>
       <% else %>
-        <div class="alert alert-warning">No tasks are created for the Todo!</div>
+        <div class="alert alert-warning">No tasks are created for the process Todo <%= @todo.name %>!</div>
       <% end %>
+      <p><%= link "Return to list of Todos", class: "btn btn-warning", to: Routes.todos_path(@socket, :index)%></p>
     </div>
 
     """
@@ -177,6 +169,9 @@ defmodule TaskmaniaWeb.TodosLive.Show do
       _ ->
         ""
     end
-    #if task.status == "Completed", do: "table-success"
+  end
+
+  defp next_task_order(todo_id) do
+    Action.next_task_order(todo_id)
   end
 end

@@ -1,9 +1,12 @@
-<h4 class="mb-3">List of Processes Todo</h4>
+<h4 class="mb-3">List of Process Todos</h4>
+
 <div class="container">
-    <div class="row">
-        <div class="col-11">List of process Todo</div>
-        <div class="col-1">
-            <%= link "Create", to: Routes.live_path(@socket, TaskmaniaWeb.TodosLive.New), class: "btn btn-info" %>
+    <div class="row" phx-window-keyup="create">
+        <div class="col-10">
+            <p>Create a Todo to group all related tasks into a single domain specific process.  A date/time-based todo is way to group all tasks which is required specific date or time duration to perform all tasks.  While process-based todo is for specific process that span multiple days or time.</p>
+        </div>
+        <div class="col-2">
+            <%= link "+ Create new Todo", to: Routes.live_path(@socket, TaskmaniaWeb.TodosLive.New), class: "btn btn-info" %>
         </div>
     </div>
 </div>

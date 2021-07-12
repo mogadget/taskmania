@@ -7,19 +7,26 @@ defmodule TaskmaniaWeb.ModalComponent do
       <div class="phx-modal-content">
         <%= live_patch raw("&times;"),  to: @return_to,  class: "phx-modal-close" %>
         <h4>Add new Task</h4>
+        <hr/>
         <%= f = form_for @changeset, "#", phx_submit: :save %>
 
           <div class="mb-3">
-            <%= text_input f, :name, required: true, class: "form-control", placeholder: "Name", autocomplete: "off" %>
+            <%= text_input f, :name, class: "form-control", placeholder: "name of task", autocomplete: "off" %>
             <%= error_tag f, :name %>
           </div>
 
           <div class="mb-3">
-            <%= textarea f, :details, class: "form-control", placeholder: "Detail description" %>
+            <%= text_input f, :dependencies, class: "form-control", placeholder: "list of dependent tasks", autocomplete: "off" %>
+            <%= error_tag f, :dependencies %>
           </div>
 
           <div class="mb-3">
-            <%= submit "Add Task", class: "btn btn-success", phx_disable_with: "appending..." %>
+            <%= textarea f, :details, class: "form-control", placeholder: "task detailed description" %>
+            <%= error_tag f, :details %>
+          </div>
+
+          <div class="mb-3">
+            <%= submit "Save", class: "btn btn-success", phx_disable_with: "appending..." %>
           </div>
         </form>
       </div>
