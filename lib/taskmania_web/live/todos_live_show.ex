@@ -19,6 +19,10 @@ defmodule TaskmaniaWeb.TodosLive.Show do
     {:ok, socket}
   end
 
+  def handle_params(_params, _url, socket) do
+    {:noreply, socket}
+  end
+
   def handle_event("save", %{"task" => params}, socket) do
     #todo = assign(socket)
     IO.inspect(["---->", params, socket])
@@ -84,27 +88,31 @@ defmodule TaskmaniaWeb.TodosLive.Show do
     <h4 class="mb-3"><%= todo.name %> Tasks</h4>
     <div id="create">
       <%= if todo.status == "New" do %>
-        <%= f = form_for changeset, "#", phx_submit: :save %>
+        <div class="container">
+          <div class="row">
+            <div class="col-8">List of process to do</div>
+            <div class="col-4">
+              <%= live_patch "Create Todo", to: Routes.todos_show_path(@socket, :modal_new, todo.id), class: "btn btn-success" %>
 
-          <div class="mb-3">
-            <%= text_input f, :name, required: true, class: "form-control", placeholder: "Name", autocomplete: "off" %>
-            <%= error_tag f, :name %>
-          </div>
+              <%= if @live_action == :modal_new do %>
 
-          <div class="mb-3">
-            <%= textarea f, :details, class: "form-control", placeholder: "Detail description" %>
-          </div>
+              <%= live_component(
+                    TaskmaniaWeb.ModalComponent,
+                    id: :modal,
+                    component: TaskmaniaWeb.ModalComponent,
+                    return_to: Routes.todos_show_path(@socket, :show, todo.id),
+                    changeset: @changeset,
+                    tasks: @tasks,
+                    todo: @todo,
+                    opts: %{}
+                  ) %>
 
-          <div class="mb-3">
-            <%= submit "Add Task", class: "btn btn-success", phx_disable_with: "appending..." %>
-            <%= if length(@tasks) > 0 do %>
-            <div class="btn btn-info" phx-click="task_add_complete" phx-value-id="<%= todo.id %>" phx-disable-with="updating...">
-              Done Adding Tasks
+              <% end %>
             </div>
-            <% end %>
           </div>
-        </form>
+        </div>
       <% end %>
+
       <%= if length(@tasks) > 0 do %>
         <table class="table table-striped">
           <thead>

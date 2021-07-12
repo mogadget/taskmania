@@ -17,6 +17,10 @@ defmodule TaskmaniaWeb.TodosLive do
     {:ok, socket}
   end
 
+  def handle_params(_params, _url, socket) do
+    {:noreply, socket}
+  end
+
   def handle_event("save", %{"todo" => params}, socket) do
     #IO.inspect(["handle-save", socket])
     case Action.create_todo(params) do

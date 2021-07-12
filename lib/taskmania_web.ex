@@ -47,6 +47,8 @@ defmodule TaskmaniaWeb do
       use Phoenix.LiveView,
         layout: {TaskmaniaWeb.LayoutView, "live.html"}
 
+      import TaskmaniaWeb.LiveHelpers
+
       unquote(view_helpers())
     end
   end

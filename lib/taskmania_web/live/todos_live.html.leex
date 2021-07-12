@@ -1,26 +1,15 @@
 <h4 class="mb-3">Things Todo</h4>
-<div id="create">
-  <%= f = form_for @changeset, "#", phx_submit: :save %>
-
-    <div class="mb-3">
-        <%= text_input f, :name, required: true, class: "form-control", placeholder: "Name", autocomplete: "off" %>
-        <%= error_tag f, :name %>
+<div class="container">
+    <div class="row">
+        <div class="col-11">List of process Todo</div>
+        <div class="col-1">
+            <%= link "Create", to: Routes.live_path(@socket, TaskmaniaWeb.TodosLive.New), class: "btn btn-info" %>
+        </div>
     </div>
+</div>
 
-    <div class="mb-3">
-        <%= select f, :type, ["Select Type": nil, "Date Specific": "Date", "Process": "Process"], class: "form-select" %>
-        <%= error_tag f, :type %>
-    </div>
-
-    <div class="mb-3">
-        <%= textarea f, :details, class: "form-control", placeholder: "Detail description" %>
-    </div>
-
-    <div class="mb-3">
-        <%= submit "Create", class: "btn btn-success", phx_disable_with: "creating..." %>
-    </div>
-  </form>
-
+<div id="todo-list">
+  <%= if length(@todos) > 0 do %>
     <table class="table">
     <thead>
         <tr>
@@ -28,7 +17,7 @@
             <th scope="col">Name</th>
             <th scope="col">Type</th>
             <th scope="col">Details</th>
-            <th scopp="col"><%= link "Status", to: Routes.live_path(@socket, TaskmaniaWeb.TodosLive, %{sort_by: "status"}) %>
+            <th scopp="col"><%=# link "Status", to: Routes.live_path(@socket, TaskmaniaWeb.TodosLive, %{sort_by: "status"}) %>
             <th width="1%"></th>
             <th width="1%"></th>
             <th width="1%"></th>
@@ -51,4 +40,7 @@
         </div>
     </tbody>
     </table>
+    <% else %>
+        <div class="alert alert-warning">No todo found!</div>
+    <% end %>
 </div>

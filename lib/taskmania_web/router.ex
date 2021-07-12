@@ -21,8 +21,10 @@ defmodule TaskmaniaWeb.Router do
     pipe_through :browser
 
     live "/", PageLive, :index
-    live "/todos", TodosLive
+    live "/todos", TodosLive, :index
+    live "/todos/new", TodosLive.New
     live "/todos/:id/show", TodosLive.Show, :show
+    live "/todos/:id/tasks/new", TodosLive.Show, :modal_new
   end
 
   # Other scopes may use custom stacks.
