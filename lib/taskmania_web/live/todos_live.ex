@@ -22,7 +22,6 @@ defmodule TaskmaniaWeb.TodosLive do
   end
 
   def handle_event("save", %{"todo" => params}, socket) do
-    #IO.inspect(["handle-save", socket])
     case Action.create_todo(params) do
       {:ok, todo} ->
         socket =
