@@ -51,7 +51,9 @@ defmodule TaskmaniaWeb.TodosLive.Show do
     {:ok, task} = Action.update_task(task, %{status: "Completed"})
 
     tasks = Action.get_todo_tasks(task.todo_id)
-    socket = assign(socket, tasks: tasks)
+    {:ok, todo} = Action.update_todo_status(task.todo_id, "Completed")
+
+    socket = assign(socket, tasks: tasks, todo: todo)
 
     {:noreply, socket}
   end
@@ -61,7 +63,9 @@ defmodule TaskmaniaWeb.TodosLive.Show do
     {:ok, task} = Action.update_task(task, %{status: "Failed"})
 
     tasks = Action.get_todo_tasks(task.todo_id)
-    socket = assign(socket, tasks: tasks)
+    {:ok, todo} = Action.update_todo_status(task.todo_id, "Failed")
+
+    socket = assign(socket, tasks: tasks, todo: todo)
 
     {:noreply, socket}
   end
@@ -79,13 +83,31 @@ defmodule TaskmaniaWeb.TodosLive.Show do
     ~L"""
 
     <h4 class="mb-3"><%= @todo.name %></h4>
-    <p><%= @todo.details %></p>
+    <div class="row mb-1">
+      <div class="col-sm-1"><strong>Details :</strong></div>
+      <div class="col-sm-11">
+        <div><%= @todo.details %></div>
+      </div>
+    </div>
+    <div class="row mb-1">
+      <div class="col-sm-1"><strong>Type :</strong></div>
+      <div class="col-sm-5">
+        <div><%= @todo.type %></div>
+      </div>
+
+      <div class="col-sm-1"><strong>Status :</strong></div>
+      <div class="col-sm-5">
+        <div><%= @todo.status %></div>
+      </div>
+    </div>
+    <hr/>
+
     <div id="create">
       <%= if @todo.status == "New" do %>
         <div class="container">
           <div class="row alert alert-primary">
             <div class="col-10">
-              <p>This page list all the tasks that are needed to perform the Todo process <strong><%= @todo.name %></strong>.  A task might be dependent to other tasks to complete or can only be performed by a designated person or role.</p>
+              <p>These are the tasks that are needed to perform the Todo process <strong><%= @todo.name %></strong>.  A task might be dependent to other tasks to complete or can only be performed by a designated person or role.</p>
               <p><strong>Note :</strong> These tasks will remain in draft mode or "New" status until the "Done Adding Task" button is clicked to set to Ready status.</p>
             </div>
             <div class="col-2">
@@ -130,8 +152,8 @@ defmodule TaskmaniaWeb.TodosLive.Show do
                   <tr class="task <%= classy(task.status) %>" id="<%= task.id %>">
                       <th scope="row"><%= task.sequence %></th>
                       <td><%= task.name %></td>
-                      <td><%= task.details%></td>
-                      <td><%= task.status%></td>
+                      <td width="60%"><%= task.details%></td>
+                      <td width="10%"><%= task.status%></td>
                       <td width="1%">
                         <%= if @todo.status == "Ready" && task.status != "Completed" && task.status != "Failed" do %>
                           <div class="btn btn-danger btn-sm" phx-click="failed" phx-value-id="<%= task.id %>" phx-disable-with="updating...">
@@ -144,6 +166,8 @@ defmodule TaskmaniaWeb.TodosLive.Show do
                           <div class="btn btn-success btn-sm" phx-click="complete" phx-value-id="<%= task.id %>" phx-disable-with="updating...">
                             Done
                           </div>
+                        <% else %>
+                          n/a
                         <% end %>
                       </td>
                   </tr>

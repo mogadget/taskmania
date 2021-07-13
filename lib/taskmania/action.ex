@@ -93,6 +93,22 @@ defmodule Taskmania.Action do
   end
 
   @doc """
+    Update todo status to Completed when total Todo tasks is equal to all Completed tasks
+  """
+  def update_todo_status(todo_id, status) do
+    todo = get_todo!(todo_id)
+
+    total_tasks     = total_todo_task(todo_id)
+    total_status = total_task_status(todo_id, status)
+
+    if ( total_tasks > 0 && (total_tasks == total_status)) do
+      update_todo(todo, %{status: status})
+    else
+      {:ok, todo}
+    end
+  end
+
+  @doc """
   Deletes a todo.
 
   ## Examples
@@ -185,6 +201,8 @@ defmodule Taskmania.Action do
 
   """
   def update_task(%Task{} = task, attrs) do
+
+    status = Map.get(attrs, :status)
     task
     |> Task.changeset(attrs)
     |> Repo.update()
@@ -231,9 +249,9 @@ defmodule Taskmania.Action do
     ["Pending","Done","Failed"]
   end
 
-  def total_task_status(todo_id, _status) do
+  def total_task_status(todo_id, status) do
     query = from t in "tasks",
-          where: t.todo_id == ^todo_id,
+          where: t.todo_id == ^todo_id and t.status == ^status,
           select: count(t.id)
 
     Repo.one(query)
