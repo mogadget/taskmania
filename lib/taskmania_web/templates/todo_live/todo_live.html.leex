@@ -39,10 +39,10 @@
                 </td>
                 <td>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: <%= completed_pctg(todo.total_tasks, todo.completed_tasks) %>%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: <%= status_pctg(todo.total_tasks, todo.completed_tasks) %>%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
                             <%= todo.completed_tasks %>
                         </div>
-                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: <%= completed_pctg(todo.total_tasks, todo.failed_tasks) %>%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: <%= status_pctg(todo.total_tasks, todo.failed_tasks) %>%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
                             <%= todo.failed_tasks %>
                         </div>
                     </div>
